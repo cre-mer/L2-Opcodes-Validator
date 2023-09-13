@@ -79,3 +79,42 @@ fn main() {
 
     println!("{}", "No illegal opcodes found ☺️".green());
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_validate_json() {
+        let json = r#"{
+            "bytecode": {
+                "object": "608060405234801561001057600080fd5b5061012f806100206000396000f3fe60806040526004361061004c576000357c0
+            }
+        }"#;
+
+        let data: Value = from_str(json).unwrap();
+        let bytecode = validate_json(data).unwrap();
+        assert_eq!(bytecode, "608060405260043610610104c576000357c0");
+    }
+
+    #[test]
+    fn test_opcode_to_string() {
+        let opcode = evm_disassembler::Opcode::ADD;
+        let opcode_string = opcode_to_string(opcode);
+        assert_eq!(opcode_string, "ADD");
+    }
+
+    #[test]
+    // test illegal upcodes
+    fn test_illegal_upcodes() {
+        let json = r#"{
+            "bytecode": {
+                "object": "608060405234801561001057600080fd5b5061012f806100206000396000f3fe60806040526004361061004c576000357c0
+            }
+        }"#;
+
+        let data: Value = from_str(json).unwrap();
+        let bytecode = validate_json(data).unwrap();
+        assert_eq!(bytecode, "608060405260043610610104c576000357c0");
+    }
+}
